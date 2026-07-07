@@ -7,11 +7,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
-        /* ========== RESET ========== */
         * {
             margin: 0;
             padding: 0;
@@ -30,21 +27,21 @@
             color: inherit;
         }
 
-        /* ========== HEADER / NAV ========== */
+        /* ========== HEADER ========== */
         .header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(8px);
-            padding: 12px 30px;
+            padding: 12px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background 0.3s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            height: 74px;
         }
 
         .header .logo {
@@ -77,43 +74,14 @@
             letter-spacing: 2px;
         }
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .nav-menu a {
-            color: #ddd;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: white;
-        }
-
-        .nav-menu .btn-login {
-            background: white;
-            color: #000;
-            padding: 8px 22px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 13px;
-            transition: background 0.3s, transform 0.2s;
-        }
-
-        .nav-menu .btn-login:hover {
-            background: #e0e0e0;
-            transform: scale(1.02);
-        }
-
+        /* Menú desplegable (hamburguesa) */
         .menu-toggle {
-            display: none;
+            display: flex;
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
+            padding: 5px;
+            z-index: 1001;
         }
 
         .menu-toggle span {
@@ -121,20 +89,134 @@
             height: 3px;
             background: white;
             border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Menú lateral (desplegable desde la izquierda) */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-menu.open {
+            left: 0;
+        }
+
+        .nav-menu .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: block;
+            color: #ddd;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: white;
+            padding-left: 10px;
+        }
+
+        .nav-menu .btn-login {
+            margin-top: 20px;
+            background: white;
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .nav-menu .btn-login:hover {
+            background: #e0e0e0;
+            transform: scale(1.02);
+            padding-left: 20px;
+        }
+
+        .nav-menu .btn-login-admin {
+            margin-top: 10px;
+            background: transparent;
+            color: #aaa;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 400;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .nav-menu .btn-login-admin:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Overlay para cerrar el menú */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 998;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
         }
 
         /* ========== HERO ========== */
         .hero {
             height: 100vh;
             min-height: 600px;
-            background: url('assets/imagenes/estadio.jpg') center/cover no-repeat fixed;
+            background: url('assets/imagenes/hinchada.jpg') center/cover no-repeat fixed;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 0 20px;
-            margin-top: 74px; /* altura del header fijo */
+            margin-top: 74px;
+            /* Filtro blanco y negro */
+            filter: grayscale(0%);
         }
 
         .hero::before {
@@ -144,7 +226,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.6);
         }
 
         .hero-content {
@@ -162,12 +244,8 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
-            font-weight: 900;
-            color: #000;
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.2;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+            overflow: hidden;
         }
 
         .hero-content .escudo img {
@@ -181,7 +259,7 @@
             font-size: 56px;
             font-weight: 900;
             color: white;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             letter-spacing: 3px;
         }
 
@@ -194,13 +272,11 @@
             margin-top: 8px;
         }
 
-        .hero-content p {
-            color: rgba(255,255,255,0.85);
-            font-size: 18px;
-            margin: 20px 0 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+        .hero-content .info-club {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 16px;
+            margin: 20px 0 15px;
+            line-height: 1.8;
         }
 
         .hero-content .btn-cta {
@@ -212,7 +288,7 @@
             font-weight: 700;
             font-size: 16px;
             transition: background 0.3s, transform 0.2s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .hero-content .btn-cta:hover {
@@ -242,108 +318,71 @@
             margin-bottom: 40px;
         }
 
-        /* Cards grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
-        }
-
-        .card-item {
-            background: white;
-            border-radius: 16px;
-            padding: 30px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: transform 0.3s, box-shadow 0.3s;
+        /* ========== PRÓXIMO PARTIDO ========== */
+        .proximo-partido {
+            background: #000;
+            color: white;
+            padding: 60px 30px;
             text-align: center;
-            border-top: 4px solid #000;
+            border-radius: 20px;
+            margin: 0 20px 40px;
         }
 
-        .card-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-        }
-
-        .card-item .icon {
-            font-size: 48px;
+        .proximo-partido .icono {
+            font-size: 60px;
             margin-bottom: 15px;
         }
 
-        .card-item h3 {
+        .proximo-partido h2 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 20px;
-            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
         }
 
-        .card-item p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        /* Estadísticas / gráfico */
-        .stats-demo {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            margin-top: 40px;
-        }
-
-        .stats-demo .chart-container {
-            max-width: 700px;
-            margin: 0 auto;
-            height: 280px;
-        }
-
-        /* Noticias / blog */
-        .noticias-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .noticia-item {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: transform 0.3s;
-        }
-
-        .noticia-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .noticia-item .img-placeholder {
-            height: 180px;
-            background: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #888;
-        }
-
-        .noticia-item .body {
-            padding: 20px;
-        }
-
-        .noticia-item .body h4 {
-            font-family: 'Montserrat', sans-serif;
+        .proximo-partido p {
+            color: #aaa;
             font-size: 18px;
+            margin-top: 10px;
+        }
+
+        /* ========== CONTACTO ========== */
+        .contacto-section {
+            background: #f8f9fa;
+            border-radius: 40px;
+            padding: 60px 30px;
+            margin: 0 20px 40px;
+        }
+
+        .contacto-section .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contacto-section .grid .item .icon {
+            font-size: 28px;
             margin-bottom: 8px;
         }
 
-        .noticia-item .body p {
-            color: #666;
+        .contacto-section .grid .item p {
             font-size: 14px;
+            color: #555;
         }
 
-        .noticia-item .body .fecha {
-            font-size: 12px;
-            color: #999;
-            margin-top: 10px;
+        .contacto-section .grid .item .social a {
+            display: inline-block;
+            margin: 0 8px;
+            font-size: 24px;
+            color: #000;
+            transition: transform 0.2s;
+        }
+
+        .contacto-section .grid .item .social a:hover {
+            transform: scale(1.1);
         }
 
         /* ========== FOOTER ========== */
@@ -355,27 +394,6 @@
             border-top: 1px solid #222;
         }
 
-        .footer .social {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .footer .social a {
-            color: #aaa;
-            font-size: 22px;
-            transition: color 0.3s;
-        }
-
-        .footer .social a:hover {
-            color: white;
-        }
-
-        .footer p {
-            font-size: 13px;
-        }
-
         .footer .brand {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
@@ -384,29 +402,29 @@
             margin-bottom: 5px;
         }
 
+        .footer p {
+            font-size: 13px;
+            margin: 5px 0;
+        }
+
+        .footer a {
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .header {
                 padding: 10px 20px;
-                flex-wrap: wrap;
+                height: 64px;
             }
 
-            .nav-menu {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                gap: 15px;
-                padding: 20px 0;
-                border-top: 1px solid rgba(255,255,255,0.1);
-                margin-top: 10px;
-            }
-
-            .nav-menu.open {
-                display: flex;
-            }
-
-            .menu-toggle {
-                display: flex;
+            .header .logo h1 {
+                font-size: 16px;
             }
 
             .hero-content h1 {
@@ -425,8 +443,29 @@
                 font-size: 28px;
             }
 
-            .stats-demo .chart-container {
-                height: 200px;
+            .proximo-partido {
+                padding: 40px 20px;
+                margin: 0 10px 30px;
+            }
+
+            .proximo-partido h2 {
+                font-size: 24px;
+            }
+
+            .contacto-section {
+                padding: 40px 20px;
+                margin: 0 10px 30px;
+            }
+
+            .nav-menu {
+                width: 280px;
+                left: -300px;
+                padding: 70px 20px 20px;
+            }
+
+            .nav-menu a {
+                font-size: 15px;
+                padding: 10px 0;
             }
         }
     </style>
@@ -436,7 +475,6 @@
     <!-- ========== HEADER ========== -->
     <header class="header">
         <div class="logo">
-            <!-- Escudo en el header -->
             <img src="assets/imagenes/escudo.png" alt="Escudo Club 24" />
             <h1>BRAVOS <span>DEL 24</span></h1>
         </div>
@@ -446,16 +484,23 @@
             <span></span>
             <span></span>
         </div>
-
-        <nav class="nav-menu" id="navMenu">
-            <a href="#inicio">Inicio</a>
-            <a href="#nosotros">Nosotros</a>
-            <a href="#socios">Socios</a>
-            <a href="#noticias">Noticias</a>
-            <a href="#contacto">Contacto</a>
-            <a href="login.php" class="btn-login">Área de Socios</a>
-        </nav>
     </header>
+
+    <!-- ========== MENU LATERAL ========== -->
+    <nav class="nav-menu" id="navMenu">
+        <div class="nav-label">MENÚ</div>
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#socios">Socios</a>
+        <a href="#noticias">Noticias</a>
+        <a href="#contacto">Contacto</a>
+
+        <a href="http://localhost/SISTEMA%20DE%20GESTION%20DE%20SOCIOS/Socios/login.php" class="btn-login">🔑 Área de Socio</a>
+        <a href="http://localhost/SISTEMA%20DE%20GESTION%20DE%20SOCIOS/Socios/login.php" class="btn-login-admin">🔐 Acceso Administradores</a>
+    </nav>
+
+    <!-- Overlay para cerrar menú -->
+    <div class="overlay" id="overlay"></div>
 
     <!-- ========== HERO ========== -->
     <section class="hero" id="inicio">
@@ -464,181 +509,150 @@
                 <img src="assets/imagenes/escudo.png" alt="Escudo Club 24" />
             </div>
             <h1>BRAVOS DEL 24 <span>Club 24 de Septiembre</span></h1>
-            <p>Más de 50 años de pasión deportiva y compromiso con nuestra comunidad. Areguá, Paraguay.</p>
-            <a href="#socios" class="btn-cta">Hazte Socio →</a>
+            <div class="info-club">
+                <strong>Fundado el 24/09/1914.</strong><br />
+                Afiliado a la APF desde el 13/01/2016.
+            </div>
+            <a href="#socios" class="btn-cta">Hacete Socio →</a>
         </div>
     </section>
 
-    <!-- ========== NOSOTROS ========== -->
+    <!-- ========== NOSOTROS (sección vacía o breve) ========== -->
     <section class="section" id="nosotros">
-        <h2 class="section-title">Sobre el Club</h2>
-        <p class="section-subtitle">Fundado en 1974, el Club 24 de Septiembre es un pilar del deporte en Areguá.</p>
-
-        <div class="cards-grid">
-            <div class="card-item">
-                <div class="icon">⚽</div>
-                <h3>Deporte</h3>
-                <p>Fútbol, básquet, vóley y más. Formamos atletas desde las divisiones inferiores.</p>
-            </div>
-            <div class="card-item">
-                <div class="icon">🤝</div>
-                <h3>Comunidad</h3>
-                <p>Más de 300 socios activos que comparten la pasión por el club y sus colores.</p>
-            </div>
-            <div class="card-item">
-                <div class="icon">🏆</div>
-                <h3>Historia</h3>
-                <p>Decenas de títulos locales y regionales. Orgullo de Areguá.</p>
-            </div>
-        </div>
-
-        <!-- Gráfico de ejemplo (estadísticas) -->
-        <div class="stats-demo">
-            <h3 style="font-family:'Montserrat',sans-serif; text-align:center; margin-bottom:20px;">📊 Socios por categoría (2026)</h3>
-            <div class="chart-container">
-                <canvas id="chartSocios"></canvas>
-            </div>
+        <h2 class="section-title">Nosotros</h2>
+        <p class="section-subtitle">Somos el Club 24 de Septiembre, una institución con más de 100 años de historia en Areguá.</p>
+        <div style="max-width:700px; margin:0 auto; text-align:center; color:#555;">
+            <p>Fundado en 1914, el club ha sido cuna de grandes deportistas y un pilar de la comunidad. Nuestro compromiso es formar personas a través del deporte y fomentar los valores de trabajo en equipo, respeto y pasión.</p>
         </div>
     </section>
 
     <!-- ========== SOCIOS ========== -->
     <section class="section" id="socios" style="background:#f8f9fa; border-radius: 40px 40px 0 0;">
-        <h2 class="section-title">Hazte Socio</h2>
-        <p class="section-subtitle">Forma parte de la familia Bravos del 24 y disfruta de todos los beneficios.</p>
+        <h2 class="section-title">Hacete Socio</h2>
+        <p class="section-subtitle">Formá parte de la familia Bravos del 24 y disfrutá de todos los beneficios.</p>
 
-        <div class="cards-grid">
-            <div class="card-item" style="border-top-color: #28a745;">
-                <div class="icon">⭐</div>
-                <h3>Socio Activo</h3>
-                <p>Acceso a todas las instalaciones, eventos y descuentos exclusivos.</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:30px; max-width:900px; margin:0 auto;">
+            <div style="background:white; border-radius:16px; padding:30px 20px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-top:4px solid #000;">
+                <div style="font-size:48px;">⭐</div>
+                <h3 style="font-family:'Montserrat',sans-serif; margin:10px 0;">Socio Activo</h3>
+                <p style="color:#666;">Acceso a todas las instalaciones, eventos y descuentos exclusivos.</p>
                 <p style="margin-top:12px; font-weight:700; color:#000;">100.000 Gs. / año</p>
             </div>
-            <div class="card-item" style="border-top-color: #ffc107;">
-                <div class="icon">📆</div>
-                <h3>Cuota Fraccionada</h3>
-                <p>Paga en 3 cuotas de 35.000 Gs. sin recargos.</p>
+            <div style="background:white; border-radius:16px; padding:30px 20px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-top:4px solid #ffc107;">
+                <div style="font-size:48px;">📆</div>
+                <h3 style="font-family:'Montserrat',sans-serif; margin:10px 0;">Cuota Fraccionada</h3>
+                <p style="color:#666;">Paga en 3 cuotas de 35.000 Gs. sin recargos.</p>
                 <p style="margin-top:12px; font-weight:700; color:#000;">35.000 Gs. / cuota</p>
             </div>
-            <div class="card-item" style="border-top-color: #17a2b8;">
-                <div class="icon">🏅</div>
-                <h3>Beneficios</h3>
-                <p>Descuentos en comercios locales, prioridad en eventos y uso de canchas.</p>
+            <div style="background:white; border-radius:16px; padding:30px 20px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-top:4px solid #17a2b8;">
+                <div style="font-size:48px;">🏅</div>
+                <h3 style="font-family:'Montserrat',sans-serif; margin:10px 0;">Beneficios</h3>
+                <p style="color:#666;">Descuentos en comercios locales, prioridad en eventos y uso de canchas.</p>
             </div>
         </div>
 
         <div style="text-align:center; margin-top:30px;">
-            <a href="registrar.php" class="btn-cta" style="background:#000; color:white; padding:14px 40px; border-radius:50px; font-weight:700; display:inline-block; box-shadow:0 4px 20px rgba(0,0,0,0.2);">Registrarme ahora →</a>
+            <a href="http://localhost/SISTEMA%20DE%20GESTION%20DE%20SOCIOS/Socios/registrar.php" class="btn-cta" style="background:#000; color:white; padding:14px 40px; border-radius:50px; font-weight:700; display:inline-block; box-shadow:0 4px 20px rgba(0,0,0,0.2);">Registrarme ahora →</a>
         </div>
     </section>
 
     <!-- ========== NOTICIAS ========== -->
     <section class="section" id="noticias">
-        <h2 class="section-title">Últimas Noticias</h2>
+        <h2 class="section-title">Noticias</h2>
         <p class="section-subtitle">Mantente al día con las novedades del club.</p>
 
-        <div class="noticias-grid">
-            <div class="noticia-item">
-                <div class="img-placeholder">📰</div>
-                <div class="body">
-                    <h4>Nuevo torneo de fútbol infantil</h4>
-                    <p>Inscripciones abiertas para las categorías sub-12 y sub-15. ¡Participá!</p>
-                    <div class="fecha">12 de julio de 2026</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:30px;">
+            <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                <div style="height:160px; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:40px; color:#888;">📰</div>
+                <div style="padding:20px;">
+                    <h4 style="font-family:'Montserrat',sans-serif;">Nuevo torneo de fútbol infantil</h4>
+                    <p style="color:#666; font-size:14px;">Inscripciones abiertas para las categorías sub-12 y sub-15.</p>
+                    <div style="font-size:12px; color:#999; margin-top:10px;">12 de julio de 2026</div>
                 </div>
             </div>
-            <div class="noticia-item">
-                <div class="img-placeholder">🎉</div>
-                <div class="body">
-                    <h4>Fiesta del socio 2026</h4>
-                    <p>Gran celebración con sorteos, música y actividades para toda la familia.</p>
-                    <div class="fecha">5 de julio de 2026</div>
+            <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                <div style="height:160px; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:40px; color:#888;">🎉</div>
+                <div style="padding:20px;">
+                    <h4 style="font-family:'Montserrat',sans-serif;">Fiesta del socio 2026</h4>
+                    <p style="color:#666; font-size:14px;">Gran celebración con sorteos, música y actividades.</p>
+                    <div style="font-size:12px; color:#999; margin-top:10px;">5 de julio de 2026</div>
                 </div>
             </div>
-            <div class="noticia-item">
-                <div class="img-placeholder">🏆</div>
-                <div class="body">
-                    <h4>Campeones de la liga regional</h4>
-                    <p>Nuestro equipo de vóley femenino se coronó campeón invicto.</p>
-                    <div class="fecha">28 de junio de 2026</div>
+            <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                <div style="height:160px; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:40px; color:#888;">🏆</div>
+                <div style="padding:20px;">
+                    <h4 style="font-family:'Montserrat',sans-serif;">Campeones de la liga regional</h4>
+                    <p style="color:#666; font-size:14px;">Nuestro equipo de vóley femenino se coronó campeón.</p>
+                    <div style="font-size:12px; color:#999; margin-top:10px;">28 de junio de 2026</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== CONTACTO ========== -->
-    <section class="section" id="contacto" style="background:#000; color:white; border-radius: 0 0 40px 40px; margin-bottom:40px;">
-        <h2 class="section-title" style="color:white;">Contacto</h2>
-        <p class="section-subtitle" style="color:#aaa;">Estamos en Areguá, cerca del centro.</p>
+    <!-- ========== PRÓXIMO PARTIDO ========== -->
+    <section class="proximo-partido" id="proximo">
+        <div class="icono">⚽</div>
+        <h2>Próximamente</h2>
+        <p>Estamos preparando nuevos desafíos. ¡Pronto más información!</p>
+    </section>
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:30px; max-width:700px; margin:0 auto; text-align:center;">
-            <div>
-                <div style="font-size:28px;">📍</div>
-                <p>Av. Principal 123<br />Areguá, Paraguay</p>
+    <!-- ========== CONTACTO ========== -->
+    <section class="contacto-section" id="contacto">
+        <h2 class="section-title" style="margin-bottom:10px;">Contacto</h2>
+        <p class="section-subtitle" style="margin-bottom:30px;">Estamos en Areguá - Valle Pucú</p>
+
+        <div class="grid">
+            <div class="item">
+                <div class="icon">📍</div>
+                <p><strong>Dirección</strong><br />Mariscal Francisco Solano López, calle 24 de Setiembre</p>
             </div>
-            <div>
-                <div style="font-size:28px;">📞</div>
-                <p>(021) 123-456<br />0981 234-567</p>
+            <div class="item">
+                <div class="icon">✉️</div>
+                <p><strong>Correo</strong><br />club.24desetiembre1914@gmail.com</p>
             </div>
-            <div>
-                <div style="font-size:28px;">✉️</div>
-                <p>club24@example.com</p>
+            <div class="item">
+                <div class="icon">🌐</div>
+                <p><strong>Redes Sociales</strong></p>
+                <div class="social">
+                    <a href="#" target="_blank" title="Facebook">📘</a>
+                    <a href="#" target="_blank" title="Instagram">📸</a>
+                </div>
+                <p style="font-size:12px; color:#999; margin-top:5px;">@24deset (Instagram)</p>
             </div>
         </div>
     </section>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
-        <div class="social">
-            <a href="#" target="_blank">📘</a>
-            <a href="#" target="_blank">📸</a>
-            <a href="#" target="_blank">🐦</a>
-            <a href="#" target="_blank">▶️</a>
-        </div>
         <div class="brand">BRAVOS DEL 24 · Club 24 de Septiembre</div>
         <p>&copy; 2026 · Todos los derechos reservados · Areguá, Paraguay</p>
-        <p style="font-size:11px; margin-top:10px; color:#555;">Sistema de Gestión de Socios · <a href="login.php" style="color:#888;">Acceder al sistema</a></p>
+        <p style="font-size:11px; margin-top:10px; color:#555;">
+            <a href="http://localhost/SISTEMA%20DE%20GESTION%20DE%20SOCIOS/Socios/login.php" style="color:#888;">Acceder al sistema de gestión</a>
+        </p>
     </footer>
 
-    <!-- ========== SCRIPT MENÚ ========== -->
+    <!-- ========== SCRIPTS ========== -->
     <script>
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('navMenu').classList.toggle('open');
-        });
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const overlay = document.getElementById('overlay');
 
-        // Cerrar menú al hacer clic en enlace (responsive)
+        function toggleMenu() {
+            navMenu.classList.toggle('open');
+            overlay.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Cerrar menú al hacer clic en un enlace
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
-                document.getElementById('navMenu').classList.remove('open');
-            });
-        });
-    </script>
-
-    <!-- ========== CHART.JS ========== -->
-    <script>
-        const ctx = document.getElementById('chartSocios').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Fútbol', 'Básquet', 'Vóley', 'Socios', 'Infantiles'],
-                datasets: [{
-                    label: 'Cantidad de socios',
-                    data: [120, 65, 45, 80, 40],
-                    backgroundColor: ['#000000', '#333333', '#555555', '#888888', '#aaaaaa'],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 20 }
-                    }
+                if (navMenu.classList.contains('open')) {
+                    toggleMenu();
                 }
-            }
+            });
         });
     </script>
 </body>
